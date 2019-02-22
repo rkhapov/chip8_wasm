@@ -6,12 +6,12 @@
 #include "chip8_types.h"
 #include "constants.h"
 
-struct registers {
+typedef struct {
     word pc;
     word address;
     byte v[V_REGISTERS_AMOUNT]; 
-};
+} registers;
 
-struct registers create_registers();
+registers create_registers();
 
 #endif

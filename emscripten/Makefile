@@ -14,12 +14,13 @@ all: build_dir_make core.js
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-core.js: stack.bc main.bc memory.bc registers.bc
+core.js: stack.bc main.bc memory.bc registers.bc chip8.bc
 	${CXX} \
 		 ${BUILD_DIR}/stack.bc \
 		 ${BUILD_DIR}/main.bc \
 		 ${BUILD_DIR}/memory.bc \
 		 ${BUILD_DIR}/registers.bc \
+		 ${BUILD_DIR}/chip8.bc \
 		 -s WASM=1 -o ${BUILD_DIR}/core.js ${LINK_FLAGS}
 
 registers.bc:
@@ -30,6 +31,9 @@ stack.bc:
 
 memory.bc:
 	${CXX} src/core/memory.c -o ${BUILD_DIR}/memory.bc -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+
+chip8.bc:
+	${CXX} src/core/chip8.c -o ${BUILD_DIR}/chip8.bc -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
 
 main.bc:
 	${CXX} src/main.c -o ${BUILD_DIR}/main.bc -I${INCLUDE_DIR} ${CXX_FLAGS}

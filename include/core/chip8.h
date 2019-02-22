@@ -5,11 +5,14 @@
 #include "stack.h"
 #include "registers.h"
 
-struct chip8 {
+typedef struct {
     byte *memory; 
-    struct stack *stack;
-    struct registers registers;
+    chip8_stack *stack;
+    registers registers;
     int exit_code;   
-};
+} chip8;
+
+chip8* create_chip8();
+void delete_chip8(chip8* chip8);
 
 #endif

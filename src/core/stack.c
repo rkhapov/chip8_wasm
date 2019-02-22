@@ -4,12 +4,12 @@
 #include "stack.h"
 #include "constants.h"
 
-struct stack* create_stack(int size) {
+chip8_stack* create_stack(int size) {
     if (size <= 0 || size > MAX_STACK_SIZE) {
         return NULL;
     }
 
-    struct stack* stack = malloc(sizeof(struct stack));
+    chip8_stack* stack = malloc(sizeof(stack));
 
     stack->top = -1;
     stack->size = size;
@@ -18,7 +18,7 @@ struct stack* create_stack(int size) {
     return stack;
 }
 
-void delete_stack(struct stack *stack) {
+void delete_stack(chip8_stack *stack) {
     if (stack == NULL) {
         return;
     }
@@ -27,7 +27,7 @@ void delete_stack(struct stack *stack) {
     free(stack);
 }
 
-void push(struct stack *stack, word value) {
+void push(chip8_stack *stack, word value) {
     if (is_full(stack)) {
         printf("The stack is full\n");
         abort();
@@ -37,7 +37,7 @@ void push(struct stack *stack, word value) {
     stack->values[stack->top] = value;
 }
 
-word pop(struct stack *stack) {
+word pop(chip8_stack *stack) {
     if (is_empty(stack)) {
         printf("The stack is empty\n");
         abort();
@@ -50,7 +50,7 @@ word pop(struct stack *stack) {
     return value;
 }
 
-word peek(struct stack *stack) {
+word peek(chip8_stack *stack) {
     if (is_empty(stack)) {
         printf("The stack is empty\n");
         abort();
@@ -62,10 +62,10 @@ word peek(struct stack *stack) {
 }
 
 
-int is_full(struct stack *stack) {
+int is_full(chip8_stack *stack) {
     return stack->top >= stack->size - 1;
 }
 
-int is_empty(struct stack *stack) {
+int is_empty(chip8_stack *stack) {
     return stack->top == -1;
 }

@@ -3,18 +3,18 @@
 
 #include "chip8_types.h"
 
-struct stack {
+typedef struct {
     word *values;
     int size;
     int top;
-};
+} chip8_stack;
 
-struct stack* create_stack(int size);
-void delete_stack(struct stack* stack);
-void push(struct stack* stack, word value);
-word peek(struct stack* stack);
-word pop(struct stack* stack);
-int is_full(struct stack* stack);
-int is_empty(struct stack* stack);
+chip8_stack* create_stack(int size);
+void delete_stack(chip8_stack* stack);
+void push(chip8_stack* stack, word value);
+word peek(chip8_stack* stack);
+word pop(chip8_stack* stack);
+int is_full(chip8_stack* stack);
+int is_empty(chip8_stack* stack);
 
 #endif

@@ -1,13 +1,18 @@
-BUILD_DIR = build
+BUILD_DIR = result
 CXX = emcc
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os
 LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]'
 
-all: core.js
+all: build_dir_make core.js
 	cp page.html ${BUILD_DIR}/page.html
-	cp script.js ${BUILD_DIR}/script.js	
+	cp script.js ${BUILD_DIR}/script.js
+
+	rm -rf ${BUILD_DIR}/*.bc
+
+build_dir_make:
+	mkdir -p ${BUILD_DIR}
 
 core.js: stack.bc main.bc memory.bc registers.bc
 	${CXX} \

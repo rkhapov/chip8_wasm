@@ -1,0 +1,17 @@
+BUILD_DIR = build
+
+all: clean core.js
+	cp page.html ${BUILD_DIR}/page.html
+	cp script.js ${BUILD_DIR}/script.js	
+
+core.js: stack.bc main.bc
+	emcc ${BUILD_DIR}/stack.bc ${BUILD_DIR}/main.bc -s WASM=1 -o ${BUILD_DIR}/core.js -s EXPORTED_FUNCTIONS='["_test_stack"]'
+
+stack.bc:
+	emcc src/core/stack.c -o ${BUILD_DIR}/stack.bc -s WASM=1 -Os -std=c11
+
+main.bc:
+	emcc src/main.c -o ${BUILD_DIR}/main.bc -s WASM=1 -Os -s EXPORTED_FUNCTIONS='["_test_stack"]' -std=c11
+
+clean:
+	rm -rf ${BUILD_DIR}/*

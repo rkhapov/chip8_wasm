@@ -1,7 +1,8 @@
-#include <memory.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include "memory.h"
+#include "chip8_types.h"
 #include "constants.h"
 
 byte font_bytes[] = {

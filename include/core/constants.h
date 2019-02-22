@@ -8,4 +8,7 @@
 #define MAX_MEMORY_SIZE          0xFFFF
 #define RECOMMENDED_MEMORY_SIZE  0x1000
 
+#define V_REGISTERS_AMOUNT       16
+#define V_FLAG_REGISTER          15
+
 #endif

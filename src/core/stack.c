@@ -13,7 +13,7 @@ struct stack* create_stack(int size) {
 
     stack->top = -1;
     stack->size = size;
-    stack->values = malloc(sizeof(uint16_t) * size);
+    stack->values = malloc(sizeof(word) * size);
 
     return stack;
 }
@@ -27,7 +27,7 @@ void delete_stack(struct stack *stack) {
     free(stack);
 }
 
-void push(struct stack *stack, uint16_t value) {
+void push(struct stack *stack, word value) {
     if (is_full(stack)) {
         printf("The stack is full\n");
         abort();
@@ -37,26 +37,26 @@ void push(struct stack *stack, uint16_t value) {
     stack->values[stack->top] = value;
 }
 
-uint16_t pop(struct stack *stack) {
+word pop(struct stack *stack) {
     if (is_empty(stack)) {
         printf("The stack is empty\n");
         abort();
     }
 
-    uint16_t value = stack->values[stack->top];
+    word value = stack->values[stack->top];
 
     stack->top--;
 
     return value;
 }
 
-uint16_t peek(struct stack *stack) {
+word peek(struct stack *stack) {
     if (is_empty(stack)) {
         printf("The stack is empty\n");
         abort();
     }
 
-    uint16_t value = stack->values[stack->top];
+    word value = stack->values[stack->top];
 
     return value;
 }

@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "registers.h": "c",
+        "constants.h": "c",
+        "memory.h": "c",
+        "chip8_types.h": "c",
+        "string.h": "c"
+    }
+}

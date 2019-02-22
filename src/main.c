@@ -6,6 +6,7 @@
 
 EMSCRIPTEN_KEEPALIVE
 void test_stack() {
+    printf("hello from test!\n");
 }
 
 int main(int argc, char **argv) {

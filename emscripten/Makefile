@@ -2,7 +2,7 @@ BUILD_DIR = result
 CXX = emcc
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
-CXX_FLAGS = -std=c11 -s WASM=1 -Os
+CXX_FLAGS = -std=c11 -s WASM=1 -Os -c
 LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]'
 
 all: build_dir_make core.js

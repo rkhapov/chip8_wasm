@@ -8,7 +8,6 @@ fi
 echo "Building using $1..."
 
 if [ "$1" == "emcc" ]; then
-    echo "Building using ecmascript..."
     make -f emscripten/Makefile
     exit
 fi

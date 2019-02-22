@@ -6,6 +6,7 @@ chip8* create_chip8() {
     chip8* c8 = malloc(sizeof(chip8));
 
     c8->exit_code = -1;
+    c8->blocked = 0;
     c8->registers = create_registers();
     c8->memory = create_memory(RECOMMENDED_MEMORY_SIZE);
     c8->stack = create_stack(RECOMMENDED_STACK_SIZE);

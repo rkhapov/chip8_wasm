@@ -15,6 +15,9 @@ typedef struct {
     
     chip8_registers registers;
     int exit_code;   
+
+    // if blocked, PC are not increased after instruction execution
+    int blocked;
 } chip8;
 
 chip8* create_chip8();

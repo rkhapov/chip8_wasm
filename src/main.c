@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <emscripten.h>
 
-#include "core/memory.h"
-#include "core/constants.h"
+#include "core/chip8.h"
 
 EMSCRIPTEN_KEEPALIVE
 void test_stack() {
-    printf("hello from test!\n");
+    chip8 *c8 = create_chip8();
+
+    do_key_down(c8->keyboard, 5);
+
+    printf("%d\n", is_key_pressed(c8->keyboard, 5));
+    printf("%d\n", is_key_pressed(c8->keyboard, 7));
 }
 
 int main(int argc, char **argv) {

@@ -2,8 +2,8 @@
 
 #include "registers.h"
 
-registers create_registers() {
-    registers registers;
+chip8_registers create_registers() {
+    chip8_registers registers;
     
     registers.address = 0;
     registers.pc = 0;

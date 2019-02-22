@@ -11,4 +11,9 @@
 #define V_REGISTERS_AMOUNT       16
 #define V_FLAG_REGISTER          15
 
+#define SCREEN_HEIGHT            32
+#define SCREEN_WIDTH             64
+
+#define KEYBOARD_KEYS_COUNT      16
+
 #endif

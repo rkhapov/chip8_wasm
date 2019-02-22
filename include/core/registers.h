@@ -10,8 +10,8 @@ typedef struct {
     word pc;
     word address;
     byte v[V_REGISTERS_AMOUNT]; 
-} registers;
+} chip8_registers;
 
-registers create_registers();
+chip8_registers create_registers();
 
 #endif

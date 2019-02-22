@@ -3,9 +3,6 @@
 
 #include <stdint.h>
 
-#define MAX_STACK_SIZE 4096
-#define RECOMMENDED_STACK_SIZE 4096
-
 struct stack {
     uint16_t *values;
     int size;

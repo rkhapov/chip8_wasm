@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "stack.h"
+#include "constants.h"
 
 struct stack* create_stack(int size) {
     if (size <= 0 || size > MAX_STACK_SIZE) {

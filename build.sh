@@ -12,5 +12,10 @@ if [ "$1" == "emcc" ]; then
     exit
 fi
 
+if [ "$1" == "gcc" ]; then 
+    make -f gcc/Makefile
+    exit
+fi
+
 echo "Building using $1 are now supported now!"
 exit 1

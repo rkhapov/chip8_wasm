@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "chip8.h"
 
@@ -8,45 +9,67 @@
 
 byte buffer[BUFFER_SIZE];
 
-#define OP_CLASS(opcode)    ((opcode) & 0xF000)
-#define OP_SUBCLASS(opcode) ((opcode) & 0x000F)
+#define CLS "00E0"
+#define RTS "00EE"
+#define JMP "1xxx"
+#define JSR "2xxx"
+#define JEQ "3xxx"
+#define JNE "4xxx"
+#define JER "5xx0"
+#define MCR "6xxx"
+#define ACR "7xxx"
+#define MRR "8xx0"
+#define OR  "8xx1"
+#define AND "8xx2"
+#define XOR "8xx3"
+#define ARR "8xx4"
+#define SUB "8xx5"
+#define SHR "8xx6"
+#define SBN "8xx7"
+#define SHL "8xxE"
+#define JNR "9xx0"
+#define MVI "Axxx"
+#define JMI "Bxxx"
+#define RND "Cxxx"
+#define DRW "Dxxx"
+#define JKP "Ex9E"
+#define JNP "ExA1"
+#define GDT "Fxx7"
+#define WKP "Fx0A"
+#define SDT "Fx15"
+#define SST "Fx18"
+#define ADI "Fx1E"
+#define LDC "Fx29"
+#define BCD "Fx33"
+#define STR "Fx55"
+#define LDR "Fx65"
 
-#define IS(opcode, op)    (((opcode) & (op)) == (op))
+char hex_digit_to_char(int d) {
+    static char buf[2];
 
-#define CLS 0x00E0
-#define RTS 0x00EE
-#define JMP 0x1000
-#define JSR 0x2000
-#define JEQ 0x3000
-#define JNE 0x4000
-#define JER 0x5000
-#define MCR 0x6000
-#define ACR 0x7000
-#define MRR 0x8000
-#define OR  0x8001
-#define AND 0x8002
-#define XOR 0x8003
-#define ARR 0x8004
-#define SUB 0x8005
-#define SHR 0x8006
-#define SBN 0x8007
-#define SHL 0x800E
-#define JNR 0x9000
-#define MVI 0xA000
-#define JMI 0xB000
-#define RND 0xC000
-#define DRW 0xD000
-#define JKP 0xE09E
-#define JNP 0xE0A1
-#define GDT 0xF007
-#define WKP 0xF00A
-#define SDT 0xF015
-#define SST 0xF018
-#define ADI 0xF01E
-#define LDC 0xF029
-#define BCD 0xF033
-#define STR 0xF055
-#define LDR 0xF065
+    sprintf(buf, "%x", d);
+
+    return toupper(buf[0]);
+}
+
+int is(word opcode, const char *op) {
+    for (int i = 0; i < 4; i++) {
+        char c = op[4 - i - 1];
+
+        if (c == 'x') {
+            continue;
+        }
+
+        int b = (opcode >> (4 * i)) & 0xF;
+                    
+        if (hex_digit_to_char(b) != c) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 
 void jmp(chip8 *chip8, word opcode) {
     chip8->registers->pc = opcode & 0x0FFF;
@@ -137,7 +160,7 @@ void arr(chip8 *chip8, word opcode) {
     int x = (opcode & 0x0F00) >> 8;
     int y = (opcode & 0x00F0) >> 4;  
 
-    chip8->registers->v[V_FLAG_REGISTER] = (int)chip8->registers->v[x] + (int)chip8->registers->v[y] >= 0x100; 
+    chip8->registers->v[V_FLAG_REGISTER] = chip8->registers->v[x] + (int)chip8->registers->v[y] >= 0x100; 
 
     chip8->registers->v[x] += chip8->registers->v[y];
 }
@@ -208,7 +231,7 @@ int get_bit(byte b, int i) {
 
 void drw(chip8 *chip8, word opcode) {
     word x = chip8->registers->v[(opcode & 0x0F00) >> 8];
-    word y = chip8->registers->v[(opcode & 0x0F00) >> 4];
+    word y = chip8->registers->v[(opcode & 0x00F0) >> 4];
     int height = opcode & 0x000F;
 
     chip8->registers->v[V_FLAG_REGISTER] = 0;
@@ -406,6 +429,7 @@ int load_program_file(chip8 *chip8, const char *path, int offset) {
     }
 
     fclose(file);
+    chip8->registers->pc = offset;
 
     return 1;
 }
@@ -420,23 +444,23 @@ int end_program_reached(chip8 *chip8) {
 
 int is_set_pc_instruction(word opcode) {
     return 
-        IS(opcode, RTS) ||
-        IS(opcode, JMP) ||
-        IS(opcode, JSR) ||
-        IS(opcode, JEQ) ||
-        IS(opcode, JNE) ||
-        IS(opcode, JER) ||
-        IS(opcode, JNR) ||
-        IS(opcode, JMI) ||
-        IS(opcode, JKP) ||
-        IS(opcode, JNP);
+        is(opcode, RTS) ||
+        is(opcode, JMP) ||
+        is(opcode, JSR) ||
+        is(opcode, JEQ) ||
+        is(opcode, JNE) ||
+        is(opcode, JER) ||
+        is(opcode, JNR) ||
+        is(opcode, JMI) ||
+        is(opcode, JKP) ||
+        is(opcode, JNP);
 }
 
 typedef void (*instruction_executer)(chip8*, word);
 
 typedef struct {
     instruction_executer executer;
-    int mask;
+    const char *mask;
 } handler;
 
 #define HANDLERS_COUNT 32
@@ -478,21 +502,21 @@ handler handlers_table[HANDLERS_COUNT] = {
 
 void execute_opcode_from_table(chip8 *chip8, word opcode) {
     for (int i = 0; i < HANDLERS_COUNT; i++) {
-        if (IS(opcode, handlers_table[i].mask)) {
+        if (is(opcode, handlers_table[i].mask)) {
             handlers_table[i].executer(chip8, opcode);
             return;
         }
     }
 
-    printf("Not implemented instruction: %x\n", opcode);
+    printf("Unknown code: %x\n", opcode);
     abort();
 }
 
 void execute_opcode(chip8 *chip8, word opcode) {
-    if (opcode == CLS) {
+    if (is(opcode, CLS)) {
         clear_screen(chip8->screen);
     }
-    else if (opcode == RTS) {
+    else if (is(opcode, RTS)) {
         chip8->registers->pc = pop(chip8->stack);
     }
     else {
@@ -507,7 +531,7 @@ void execute_next(chip8 *chip8) {
     }
 
     word opcode = get_next_opcode(chip8);
-
+    
     execute_opcode(chip8, opcode);
 
     if (!is_set_pc_instruction(opcode) && !chip8->blocked) {

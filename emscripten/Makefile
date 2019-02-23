@@ -4,7 +4,8 @@ AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os -c -Wall
-LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]' -s WASM=1 --preload-file games
+API_FUNCS = '["_chip8_start", "_chip8_end", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel"]'
+LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games
 REXT = .js
 
 all: build_dir_make chip8${REXT}
@@ -17,11 +18,15 @@ all: build_dir_make chip8${REXT}
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-chip8${REXT}: core.a main.o
+chip8${REXT}: core.a main.o api.o
 	${CXX} \
 		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
 		 ${BUILD_DIR}/main.o \
+		 ${BUILD_DIR}/api.o \
 		 ${BUILD_DIR}/core.a
+
+api.o:
+	${CXX} src/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 core.a: stack.o memory.o registers.o chip8.o screen.o keyboard.o
 	${AR} rvs ${BUILD_DIR}/core.a \

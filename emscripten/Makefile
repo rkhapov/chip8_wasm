@@ -5,7 +5,7 @@ INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os -c -Wall
 API_FUNCS = '["_chip8_start", "_chip8_end", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel"]'
-LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games
+LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -lSDL2
 REXT = .js
 
 all: build_dir_make chip8${REXT}
@@ -18,12 +18,13 @@ all: build_dir_make chip8${REXT}
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-chip8${REXT}: core.a main.o api.o
+chip8${REXT}: core.a main.o api.o gui.o
 	${CXX} \
-		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
 		 ${BUILD_DIR}/main.o \
 		 ${BUILD_DIR}/api.o \
-		 ${BUILD_DIR}/core.a
+		 ${BUILD_DIR}/gui.o \
+		 ${BUILD_DIR}/core.a \
+		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
 
 api.o:
 	${CXX} src/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
@@ -57,6 +58,9 @@ keyboard.o:
 
 main.o:
 	${CXX} src/main.c -o ${BUILD_DIR}/main.o -I${INCLUDE_DIR} ${CXX_FLAGS}
+
+gui.o:
+	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 clean:
 	rm -rf ${BUILD_DIR}/*

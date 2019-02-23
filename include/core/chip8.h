@@ -32,5 +32,6 @@ int load_program_file(chip8 *chip8, const char *path, int offset);
 void execute_next(chip8 *chip8);
 int end_program_reached(chip8 *chip8);
 word get_next_opcode(chip8 *chip8);
+void tick_timers(chip8 *chip8);
 
 #endif

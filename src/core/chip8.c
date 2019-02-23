@@ -531,10 +531,20 @@ void execute_next(chip8 *chip8) {
     }
 
     word opcode = get_next_opcode(chip8);
-    
+
     execute_opcode(chip8, opcode);
 
     if (!is_set_pc_instruction(opcode) && !chip8->blocked) {
         chip8->registers->pc += 2;        
+    }
+}
+
+void tick_timers(chip8 *chip8) {
+    if (chip8->delay_timer) {
+        chip8->delay_timer--;
+    }
+
+    if (chip8->sound_timer) {
+        chip8->sound_timer--;
     }
 }

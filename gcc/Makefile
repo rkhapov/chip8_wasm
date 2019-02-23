@@ -4,7 +4,7 @@ AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -c -Wall
-LINK_FLAGS =
+LINK_FLAGS = -lSDL2
 REXT = 
 
 all: build_dir_make chip8${REXT}
@@ -17,11 +17,16 @@ all: build_dir_make chip8${REXT}
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-chip8${REXT}: core.a main.o
+chip8${REXT}: core.a main.o api.o gui.o
 	${CXX} \
-		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
 		 ${BUILD_DIR}/main.o \
-		 ${BUILD_DIR}/core.a
+		 ${BUILD_DIR}/api.o \
+		 ${BUILD_DIR}/gui.o \
+		 ${BUILD_DIR}/core.a \
+		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
+
+api.o:
+	${CXX} src/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 core.a: stack.o memory.o registers.o chip8.o screen.o keyboard.o
 	${AR} rvs ${BUILD_DIR}/core.a \
@@ -52,6 +57,9 @@ keyboard.o:
 
 main.o:
 	${CXX} src/main.c -o ${BUILD_DIR}/main.o -I${INCLUDE_DIR} ${CXX_FLAGS}
+
+gui.o:
+	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 clean:
 	rm -rf ${BUILD_DIR}/*

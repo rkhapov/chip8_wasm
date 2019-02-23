@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
 #include "core/chip8.h"
 
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif
 void test_stack() {

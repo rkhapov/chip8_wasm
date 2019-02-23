@@ -4,7 +4,7 @@ AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os -c -Wall
-LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]' -s WASM=1
+LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]' -s WASM=1 --preload-file games
 REXT = .js
 
 all: build_dir_make chip8${REXT}

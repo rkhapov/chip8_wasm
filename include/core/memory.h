@@ -3,7 +3,12 @@
 
 #include "chip8_types.h"
 
-byte* create_memory(int size);
-void delete_memory(byte *memory);
+typedef struct {
+    chip8_memory_cell_t *memory;
+    int size;
+} chip8_memory;
+
+chip8_memory* create_memory(int size);
+void delete_memory(chip8_memory *memory);
 
 #endif

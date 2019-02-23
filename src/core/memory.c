@@ -1,8 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "memory.h"
 #include "chip8_types.h"
+#include "memory.h"
 #include "constants.h"
 
 byte font_bytes[] = {
@@ -24,18 +24,22 @@ byte font_bytes[] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80   // F
 };
 
-byte *create_memory(int size) {
+chip8_memory *create_memory(int size) {
     if (size < MIN_MEMORY_SIZE || size > MAX_MEMORY_SIZE) {
         return NULL;
     }
 
-    byte *memory = malloc(sizeof(byte) * size);
+    chip8_memory *memory = malloc(sizeof(chip8_memory));
+    memory->memory = malloc(sizeof(chip8_memory_cell_t) * size);
+    memory->size = size;
 
-    memcpy(memory, font_bytes, sizeof(byte) * 4 * 16);
+    memset(memory->memory, 0, sizeof(chip8_memory_cell_t) * size);
+    memcpy(memory->memory, font_bytes, sizeof(byte) * 4 * 16);
 
     return memory;
 }
 
-void delete_memory(byte *memory) {
+void delete_memory(chip8_memory *memory) {
+    free(memory->memory);
     free(memory);
 }

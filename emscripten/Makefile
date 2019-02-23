@@ -8,6 +8,7 @@ LINK_FLAGS = -s EXPORTED_FUNCTIONS='["_test_stack"]'
 all: build_dir_make core.js
 	cp page.html ${BUILD_DIR}/page.html
 	cp script.js ${BUILD_DIR}/script.js
+	cp -rf games ${BUILD_DIR}/games
 
 	rm -rf ${BUILD_DIR}/*.bc
 

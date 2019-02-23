@@ -2,8 +2,7 @@
 #define __CHIP8_KEYBOARD_H__
 
 #include "constants.h"
-
-typedef int chip8_key_t;
+#include "chip8_types.h"
 
 typedef struct {
     chip8_key_t keys[KEYBOARD_KEYS_COUNT];    

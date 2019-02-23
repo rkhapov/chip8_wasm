@@ -4,8 +4,6 @@
 #include "chip8_types.h"
 #include "constants.h"
 
-typedef int chip8_pixel_t;
-
 typedef struct {
     chip8_pixel_t **pixels;
 } chip8_screen;

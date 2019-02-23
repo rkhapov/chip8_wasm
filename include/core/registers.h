@@ -9,9 +9,10 @@
 typedef struct {
     word pc;
     word address;
-    byte v[V_REGISTERS_AMOUNT]; 
+    byte *v; 
 } chip8_registers;
 
-chip8_registers create_registers();
+chip8_registers *create_registers();
+void delete_registers(chip8_registers *registers);
 
 #endif

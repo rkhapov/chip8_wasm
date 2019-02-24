@@ -9,7 +9,7 @@ LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s DISABLE_DEPRECATED_FIND_EVENT
 REXT = .js
 
 all: build_dir_make chip8${REXT}
-	cp page.html ${BUILD_DIR}/page.html
+	cp page.html ${BUILD_DIR}/index.html
 	cp script.js ${BUILD_DIR}/script.js
 	cp -rf games ${BUILD_DIR}/games
 

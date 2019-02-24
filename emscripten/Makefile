@@ -4,8 +4,8 @@ AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os -c -Wall
-API_FUNCS = '["_chip8_start", "_chip8_end", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel"]'
-LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -lSDL2
+API_FUNCS = '["_run"]'
+LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s DISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -s USE_SDL=2
 REXT = .js
 
 all: build_dir_make chip8${REXT}
@@ -60,7 +60,7 @@ main.o:
 	${CXX} src/main.c -o ${BUILD_DIR}/main.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 gui.o:
-	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS}
+	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS} -s USE_SDL=2
 
 clean:
 	rm -rf ${BUILD_DIR}/*

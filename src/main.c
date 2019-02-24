@@ -3,14 +3,9 @@
 
 int main(int argc, char **argv) {
 
-#ifndef __EMSCRIPTEN__
-    if (argc < 2) {
-        printf("Invalid arguments. Expected CHIP-8 game file\n");
-        return 1;
-    }
+    printf("Application was started\n");
 
-    run(argv[1]);
-#endif
-    
+    run("games/PONG2");
+
     return 0;
 }

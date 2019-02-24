@@ -1,4 +1,6 @@
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,41 +67,51 @@ void draw_screen(SDL_Renderer *renderer, chip8 *chip8) {
     SDL_RenderPresent(renderer);
 }
 
+chip8* chip8_instance;
+SDL_Window *window;
+SDL_Renderer *renderer;
+
+void one_iter();
+
 void run(const char *path) {
     srand(time(0));
+    printf("sdl_runner::run\n");
 
-    chip8 *chip8 = create_chip8(path);
-    load_program_file(chip8, path, STANDARD_PROGRAM_OFFSET);
+    chip8_instance = create_chip8();
+    load_program_file(chip8_instance, path, STANDARD_PROGRAM_OFFSET);
+    window = NULL;
 
-    SDL_Window *window = NULL;
-
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        printf("Cant init SDL\n");
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("Cant init SDL: %s\n", SDL_GetError());
         abort();
     }
 
     window = SDL_CreateWindow(
-        "CHIP-8", SDL_WINDOWPOS_UNDEFINED, 
-        SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, 
-        WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+        "CHIP-8", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 
     if (window == NULL) {
-        printf("Cant create window!\n");
+        printf("Cant create window\n");
         abort();
     }
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    #ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(one_iter, 60, 1);
+    #else
     while (1) {
-        execute_next(chip8);
-        tick_timers(chip8);
-
-        process_events(chip8); 
-        draw_screen(renderer, chip8);    
+        one_iter();
 
         SDL_Delay(2);   
     }
+    #endif
 }
 
-#endif //__EMSCRIPTEN__
+void one_iter() {
+    execute_next(chip8_instance);
+    tick_timers(chip8_instance);
+
+    process_events(chip8_instance); 
+    draw_screen(renderer, chip8_instance);    
+}

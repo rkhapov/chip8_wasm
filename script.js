@@ -46,16 +46,13 @@ function tick() {
 }
 
 async function init() {
-    document.addEventListener('keydown', (e) => onKeyDown(e))
-    document.addEventListener('keyup', (e) => onKeyUp(e))
+    // document.addEventListener('keydown', (e) => onKeyDown(e))
+    // document.addEventListener('keyup', (e) => onKeyUp(e))
 
-    Module._chip8_start();
 
-    let ptr = Module.allocate(Module.intArrayFromString('games/TETRIS'), 'i8', Module.ALLOC_NORMAL);
+    let ptr = Module.allocate(Module.intArrayFromString('"games/PONG2'), 'i8', Module.ALLOC_NORMAL);
 
-    Module._chip8_load(ptr);
+    Module._run(ptr);
 
     Module._free(ptr);
-
-    setTimeout(tick, 100);
 }

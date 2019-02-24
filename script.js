@@ -42,17 +42,20 @@ function tick() {
     Module._chip8_do_tick();
     draw_screen();
 
-    setTimeout(tick, 5);
+    setTimeout(tick, 1);
 }
 
 async function init() {
-    // document.addEventListener('keydown', (e) => onKeyDown(e))
-    // document.addEventListener('keyup', (e) => onKeyUp(e))
+    document.addEventListener('keydown', (e) => onKeyDown(e))
+    document.addEventListener('keyup', (e) => onKeyUp(e))
 
+    Module._chip8_start();
 
-    let ptr = Module.allocate(Module.intArrayFromString('"games/PONG2'), 'i8', Module.ALLOC_NORMAL);
+    let ptr = Module.allocate(Module.intArrayFromString('games/PONG2'), 'i8', Module.ALLOC_NORMAL);
 
-    Module._run(ptr);
+    Module._chip8_load(ptr);
 
     Module._free(ptr);
+
+    setTimeout(tick, 5);
 }

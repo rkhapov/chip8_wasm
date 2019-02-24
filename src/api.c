@@ -47,8 +47,15 @@ void chip8_load(char *name) {
     if (instance == NULL) {
         return;
     }
+
+    printf("loading %s\n", name);
     
-    load_program_file(instance, name, STANDARD_PROGRAM_OFFSET);
+    if (!load_program_file(instance, name, STANDARD_PROGRAM_OFFSET)) {
+        printf("Cant load %s\n", name);
+        abort();
+    }
+
+    printf("offset = %x\n", instance->registers->pc);
 }
 
 #ifdef __EMSCRIPTEN__

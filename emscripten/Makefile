@@ -4,7 +4,7 @@ AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
 CXX_FLAGS = -std=c11 -s WASM=1 -Os -c -Wall
-API_FUNCS = '["_run"]'
+API_FUNCS = '["_chip8_start", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel", "_run"]'
 LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s DISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -s USE_SDL=2
 REXT = .js
 

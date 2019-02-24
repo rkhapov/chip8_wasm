@@ -8,11 +8,11 @@ LINK_FLAGS = -lSDL2
 REXT = 
 
 all: build_dir_make chip8${REXT}
-	cp page.html ${BUILD_DIR}/index.html
+	cp index.html ${BUILD_DIR}/index.html
 	cp script.js ${BUILD_DIR}/script.js
 	cp -rf games ${BUILD_DIR}/games
 
-	rm -rf ${BUILD_DIR}/*.o
+	rm -f ./${BUILD_DIR}/*.o
 
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
@@ -62,4 +62,4 @@ gui.o:
 	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 clean:
-	rm -rf ${BUILD_DIR}/*
+	rm -f ./${BUILD_DIR}/*.o

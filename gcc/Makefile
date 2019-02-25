@@ -3,8 +3,8 @@ CXX = gcc
 AR = ar
 INCLUDE_DIR = include
 INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
-CXX_FLAGS = -std=c11 -c -Wall
-LINK_FLAGS = -lSDL2
+CXX_FLAGS = -std=c11 -c -Wall -O3
+LINK_FLAGS = -lSDL2 -O3
 REXT = 
 
 all: build_dir_make chip8${REXT}

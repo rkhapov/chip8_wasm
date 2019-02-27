@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "stack.h"
-#include "constants.h"
+#include "core/stack.h"
+#include "core/constants.h"
 
 chip8_stack* create_stack(int size) {
     if (size <= 0 || size > MAX_STACK_SIZE) {

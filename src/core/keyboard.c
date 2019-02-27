@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "keyboard.h"
+#include "core/keyboard.h"
 
 chip8_keyboard* create_keyboard() {
     chip8_keyboard* keyboard = malloc(sizeof(chip8_keyboard));

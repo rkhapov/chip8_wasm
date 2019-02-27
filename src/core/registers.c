@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "registers.h"
+#include "core/registers.h"
 
 chip8_registers* create_registers() {
     chip8_registers *registers = malloc(sizeof(chip8_registers));

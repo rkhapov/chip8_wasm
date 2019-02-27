@@ -73,32 +73,18 @@ SDL_Renderer *renderer;
 
 void one_iter();
 
-void run(const char *path) {
+void run_chip8(const char *path) {
     srand(time(0));
     printf("sdl_runner::run\n");
 
     chip8_instance = create_chip8();
     load_program_file(chip8_instance, path, STANDARD_PROGRAM_OFFSET);
-    window = NULL;
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Cant init SDL: %s\n", SDL_GetError());
-        abort();
-    }
-
-    window = SDL_CreateWindow(
-        "CHIP-8", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-
-    if (window == NULL) {
-        printf("Cant create window\n");
-        abort();
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
     #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(one_iter, 60, 1);
+    emscripten_set_main_loop(one_iter, -1, 1);
     #else
     while (1) {
         one_iter();

@@ -54,7 +54,7 @@ async function init() {
     let ptr = Module.allocate(Module.intArrayFromString('games/PONG2'), 'i8', Module.ALLOC_NORMAL);
 
     // Module._chip8_load(ptr);
-    Module._run(ptr);
+    Module._run_chip8(ptr);
 
     Module._free(ptr);
 

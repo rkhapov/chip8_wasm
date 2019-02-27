@@ -1,9 +1,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "chip8_types.h"
-#include "memory.h"
-#include "constants.h"
+#include "core/chip8_types.h"
+#include "core/memory.h"
+#include "core/constants.h"
 
 byte font_bytes[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0,  // 0

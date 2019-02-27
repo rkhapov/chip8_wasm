@@ -2,10 +2,10 @@ BUILD_DIR = result
 CXX = emcc
 AR = ar
 INCLUDE_DIR = include
-INCLUDE_CORE_DIR = ${INCLUDE_DIR}/core
-CXX_FLAGS = -std=c11 -s WASM=1 -O3 -c -Wall
-API_FUNCS = '["_chip8_start", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel", "_run"]'
-LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s DISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -s USE_SDL=2 -O3
+SRC_DIR = src
+CXX_FLAGS = -std=c11 -s WASM=1 -O3 -c -Wall -s USE_SDL=2
+API_FUNCS = '["_chip8_start", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel", "_run_chip8"]'
+LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s DISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -s USE_SDL=2 -O3 -s WASM=1
 REXT = .js
 
 all: build_dir_make chip8${REXT}
@@ -18,16 +18,16 @@ all: build_dir_make chip8${REXT}
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-chip8${REXT}: core.a main.o api.o gui.o
+chip8${REXT}: core.a api.o gui.o main.o
 	${CXX} \
 		 ${BUILD_DIR}/main.o \
 		 ${BUILD_DIR}/api.o \
 		 ${BUILD_DIR}/gui.o \
 		 ${BUILD_DIR}/core.a \
-		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS} \
+		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS}
 
 api.o:
-	${CXX} src/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 core.a: stack.o memory.o registers.o chip8.o screen.o keyboard.o
 	${AR} rvs ${BUILD_DIR}/core.a \
@@ -39,28 +39,28 @@ core.a: stack.o memory.o registers.o chip8.o screen.o keyboard.o
 		${BUILD_DIR}/keyboard.o
 
 registers.o:
-	${CXX} src/core/registers.c -o ${BUILD_DIR}/registers.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/registers.c -o ${BUILD_DIR}/registers.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 stack.o:
-	${CXX} src/core/stack.c -o ${BUILD_DIR}/stack.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/stack.c -o ${BUILD_DIR}/stack.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 memory.o:
-	${CXX} src/core/memory.c -o ${BUILD_DIR}/memory.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/memory.c -o ${BUILD_DIR}/memory.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 chip8.o:
-	${CXX} src/core/chip8.c -o ${BUILD_DIR}/chip8.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/chip8.c -o ${BUILD_DIR}/chip8.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 screen.o:
-	${CXX} src/core/screen.c -o ${BUILD_DIR}/screen.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/screen.c -o ${BUILD_DIR}/screen.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 keyboard.o:
-	${CXX} src/core/keyboard.c -o ${BUILD_DIR}/keyboard.o -I${INCLUDE_CORE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/core/keyboard.c -o ${BUILD_DIR}/keyboard.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 main.o:
-	${CXX} src/main.c -o ${BUILD_DIR}/main.o -I${INCLUDE_DIR} ${CXX_FLAGS}
+	${CXX} ${SRC_DIR}/main.c -o ${BUILD_DIR}/main.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 gui.o:
-	${CXX} src/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS} -s USE_SDL=2
+	${CXX} ${SRC_DIR}/gui/sdl_runner.c -o ${BUILD_DIR}/gui.o -I${INCLUDE_DIR} ${CXX_FLAGS} -s USE_SDL=2
 
 clean:
-	rm -f ./${BUILD_DIR}/*.o
+	rm -f ./${BUILD_DIR}/*

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "chip8.h"
+#include "core/chip8.h"
 
 #define BUFFER_SIZE 4096
 

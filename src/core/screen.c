@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "screen.h"
-#include "constants.h"
+#include "core/screen.h"
+#include "core/constants.h"
 
 chip8_screen *create_screen() {
     chip8_screen *screen = malloc(sizeof(chip8_screen));

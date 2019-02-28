@@ -13,6 +13,7 @@ all: build_dir_make chip8${REXT}
 	cp -rf games ${BUILD_DIR}/games
 
 	rm -f ./${BUILD_DIR}/*.o
+	rm -f ./${BUILD_DIR}/*.a
 
 build_dir_make:
 	mkdir -p ${BUILD_DIR}

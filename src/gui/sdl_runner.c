@@ -18,8 +18,13 @@ byte keys[] = {
     SDLK_4, SDLK_r, SDLK_f, SDLK_v
 };
 
-#define WINDOW_HEIGHT  512
-#define WINDOW_WIDTH   1024
+#define WINDOW_HEIGHT  (32 * 5)
+#define WINDOW_WIDTH   (64 * 5)
+
+#define FPS 60
+#define FRAME_DELAY (1000 / FPS)
+#define IPS 500
+#define INSTRUCTIONS_PER_TICK (500 / FPS)
 
 void process_events(chip8 *chip8) {
     SDL_Event e;
@@ -50,14 +55,14 @@ void draw_screen(SDL_Renderer *renderer, chip8 *chip8) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     SDL_Rect rect;
-    rect.h = 16;
-    rect.w = 16;
+    rect.h = 5;
+    rect.w = 5;
 
     for (int y = 0; y < 32; y++) {
         for (int x = 0; x < 64; x++) {
             if (get_pixel(chip8->screen, y, x)) {
-                rect.x = x * 16;
-                rect.y = y * 16;
+                rect.x = x * 5;
+                rect.y = y * 5;
 
                 SDL_RenderFillRect(renderer, &rect);
             }
@@ -84,19 +89,21 @@ void run_chip8(const char *path) {
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
     #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(one_iter, 500, 1);
+    emscripten_set_main_loop(one_iter, FPS, 1);
     #else
     while (1) {
         one_iter();
 
-        SDL_Delay(2);   
+        SDL_Delay(FRAME_DELAY);
     }
     #endif
 }
 
 void one_iter() {
-    execute_next(chip8_instance);
-    tick_timers(chip8_instance);
+    for (int i = 0; i < INSTRUCTIONS_PER_TICK; i++) {
+        execute_next(chip8_instance);
+        tick_timers(chip8_instance);
+    }
 
     process_events(chip8_instance); 
     draw_screen(renderer, chip8_instance);    

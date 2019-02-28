@@ -84,7 +84,7 @@ void run_chip8(const char *path) {
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
     #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(one_iter, -1, 1);
+    emscripten_set_main_loop(one_iter, 500, 1);
     #else
     while (1) {
         one_iter();

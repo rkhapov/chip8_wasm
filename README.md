@@ -11,4 +11,4 @@ or
 ```
 
 when building with gcc, the result is desktop SDL application result/chip8
-when building with emcc, the result is web app at result/page.html
+when building with emcc, the result is web app at result/index.html

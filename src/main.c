@@ -7,9 +7,14 @@ EMSCRIPTEN_KEEPALIVE
 #endif
 int main(int argc, char **argv) {
 
-    printf("Application was started\n");
+    #ifndef __EMSCRIPTEN__
+    if (argc < 2) {
+        printf("Expected path to CHIP-8 game file\n");
+        return 1;
+    }
 
-    run_chip8("games/PONG2");
+    run_chip8(argv[1]);
+    #endif    
 
     return 0;
 }

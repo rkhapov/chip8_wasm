@@ -18,8 +18,9 @@ byte keys[] = {
     SDLK_4, SDLK_r, SDLK_f, SDLK_v
 };
 
-#define WINDOW_HEIGHT  (32 * 5)
-#define WINDOW_WIDTH   (64 * 5)
+#define SIZE_COEFF 10
+#define WINDOW_HEIGHT  (32 * SIZE_COEFF)
+#define WINDOW_WIDTH   (64 * SIZE_COEFF)
 
 #define FPS 60
 #define FRAME_DELAY (1000 / FPS)
@@ -55,14 +56,14 @@ void draw_screen(SDL_Renderer *renderer, chip8 *chip8) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     SDL_Rect rect;
-    rect.h = 5;
-    rect.w = 5;
+    rect.h = SIZE_COEFF;
+    rect.w = SIZE_COEFF;
 
     for (int y = 0; y < 32; y++) {
         for (int x = 0; x < 64; x++) {
             if (get_pixel(chip8->screen, y, x)) {
-                rect.x = x * 5;
-                rect.y = y * 5;
+                rect.x = x * SIZE_COEFF;
+                rect.y = y * SIZE_COEFF;
 
                 SDL_RenderFillRect(renderer, &rect);
             }
@@ -72,19 +73,32 @@ void draw_screen(SDL_Renderer *renderer, chip8 *chip8) {
     SDL_RenderPresent(renderer);
 }
 
-chip8* chip8_instance;
+chip8* chip8_instance = NULL;
 SDL_Window *window;
 SDL_Renderer *renderer;
+
+#ifdef __EMSCRIPTEN__
+int initialized = 0;
+#endif
 
 void one_iter();
 
 void run_chip8(const char *path) {
     srand(time(0));
-    printf("sdl_runner::run\n");
+
+    if (chip8_instance != NULL) {
+        delete_chip8(chip8_instance);
+        chip8_instance = NULL;    
+    }
 
     chip8_instance = create_chip8();
     load_program_file(chip8_instance, path, STANDARD_PROGRAM_OFFSET);
 
+    #ifdef __EMSCRIPTEN__
+    if (!initialized) {
+        initialized = 1;
+    #endif
+    
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
@@ -97,9 +111,17 @@ void run_chip8(const char *path) {
         SDL_Delay(FRAME_DELAY);
     }
     #endif
+
+    #ifdef __EMSCRIPTEN__
+    }
+    #endif //if (!initialized)
 }
 
 void one_iter() {
+    if (chip8_instance == NULL) {
+        return;
+    }
+
     for (int i = 0; i < INSTRUCTIONS_PER_TICK; i++) {
         execute_next(chip8_instance);
         tick_timers(chip8_instance);

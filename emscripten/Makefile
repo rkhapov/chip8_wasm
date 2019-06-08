@@ -4,8 +4,7 @@ AR = ar
 INCLUDE_DIR = include
 SRC_DIR = src
 CXX_FLAGS = -std=c11 -s WASM=1 -O3 -c -Wall -s USE_SDL=2
-UNUSED_CXX_FLAGS = -s DISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=1
-API_FUNCS = '["_chip8_start", "_chip8_load", "_chip8_do_key_down", "_chip8_do_key_up", "_chip8_do_tick", "_chip8_get_screen_height", "_chip8_get_screen_width", "_chip8_get_pixel", "_run_chip8"]'
+API_FUNCS = '["_run_chip8"]'
 LINK_FLAGS = -s EXPORTED_FUNCTIONS=${API_FUNCS} -s EXTRA_EXPORTED_RUNTIME_METHODS='["intArrayFromString", "ALLOC_NORMAL", "allocate"]' -s WASM=1 --preload-file games -s USE_SDL=2 -O3
 REXT = .js
 
@@ -20,16 +19,12 @@ all: build_dir_make chip8${REXT}
 build_dir_make:
 	mkdir -p ${BUILD_DIR}
 
-chip8${REXT}: core.a api.o gui.o main.o
+chip8${REXT}: core.a gui.o main.o
 	${CXX} \
 		 ${BUILD_DIR}/main.o \
-		 ${BUILD_DIR}/api.o \
 		 ${BUILD_DIR}/gui.o \
 		 ${BUILD_DIR}/core.a \
 		-o ${BUILD_DIR}/chip8${REXT} ${LINK_FLAGS}
-
-api.o:
-	${CXX} ${SRC_DIR}/api.c -o ${BUILD_DIR}/api.o -I${INCLUDE_DIR} ${CXX_FLAGS}
 
 core.a: stack.o memory.o registers.o chip8.o screen.o keyboard.o
 	${AR} rvs ${BUILD_DIR}/core.a \

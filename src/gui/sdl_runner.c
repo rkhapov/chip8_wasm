@@ -24,8 +24,8 @@ byte keys[] = {
 
 #define FPS 60
 #define FRAME_DELAY (1000 / FPS)
-#define IPS 500
-#define INSTRUCTIONS_PER_TICK (500 / FPS)
+#define IPS 800
+#define INSTRUCTIONS_PER_TICK (IPS / FPS)
 
 void process_events(chip8 *chip8) {
     SDL_Event e;
@@ -122,9 +122,10 @@ void one_iter() {
         return;
     }
 
+    tick_timers(chip8_instance);
+
     for (int i = 0; i < INSTRUCTIONS_PER_TICK; i++) {
         execute_next(chip8_instance);
-        tick_timers(chip8_instance);
     }
 
     process_events(chip8_instance); 
